@@ -1,0 +1,13 @@
+identifier: zed_cpu1/nrf5340/cpunet
+name: ZED_CPU1-NRF5340-network-MCU
+type: mcu
+arch: arm
+toolchain:
+  - gnuarmemb
+  - zephyr
+ram: 64
+flash: 256
+supported:
+  - watchdog
+  - gpio
+vendor: zed-boards

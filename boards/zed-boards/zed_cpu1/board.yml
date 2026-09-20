@@ -1,0 +1,9 @@
+board:
+  name: zed_cpu1
+  full_name: Zed Boards CPU1
+  vendor: zed-boards
+  socs:
+  - name: 'nrf5340'
+    variants:
+    - name: 'ns'
+      cpucluster: 'cpuapp'

@@ -1,0 +1,118 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Copyright (c) 2025 Lawrence King
+ */
+
+#include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/gpio/nordic-nrf-gpio.h>
+#include <zephyr/dt-bindings/pinctrl/nrf-pinctrl.h>
+/{
+	aliases {
+		gnss = &gnss_lc26g;
+		sensor1gnss1pps = &input_gnss_1pps;
+		sensor1anton = &input_ant_on;
+		sensor1io = &gpio_sensor1_bank1;
+		sensor1nbckprst = &gnssnbckprst;
+		sensor1ledena = &ledena;
+	};
+
+	leds {
+		status = "okay";
+		compatible = "gpio-leds";
+		gnssnbckprst: gnss_nbckp_rst {
+			gpios = <&ZED_CONNECTOR 9 GPIO_ACTIVE_LOW>;
+			label = "nBCKP_RST";
+		};
+		ledena: sensor_led_ena {
+			gpios = <&ZED_CONNECTOR 10 GPIO_ACTIVE_LOW>;
+			label = "LED_ENA";
+		};
+	};
+	inputs	{
+		compatible = "gpio-keys";
+		input_gnss_1pps: U1_3 {
+			gpios = <&ZED_CONNECTOR 11 GPIO_ACTIVE_HIGH>;
+			label = "nGNSS_1PPS";
+		};
+	};
+};
+
+&i2c1 {
+	status = "okay";
+	compatible = "nordic,nrf-twim";
+	status = "okay";
+	pinctrl-0 = <&I2C_DEFAULT>; 
+	pinctrl-1 = <&I2C_SLEEP>; 
+	pinctrl-names = "default", "sleep";
+	zephyr,concat-buf-size = <512>;
+
+	gpio_sensor1_bank1: pcal6408a@20 {
+		compatible = "nxp,pcal6408a";
+		reg = <0x20>;
+		gpio-controller;
+		#gpio-cells = <2>;
+		ngpios = <8>;
+		int-gpios = <&ZED_CONNECTOR 12 (GPIO_ACTIVE_LOW|GPIO_PULL_UP)>;	/* pin 12 on ZED_CONNECTOR */
+		reset-gpios = <&ZED_CONNECTOR 8 GPIO_ACTIVE_LOW>;	/* pin 8 on ZED_CONNECTOR */
+		/* GPIOs connected to sensor1_bank1 I/O expander. The remaining pins are */
+		/* interrupts comming from the various other devices on the shield and */
+		/* get configured when the interrupting device gets configured */
+		u10_inputs	{
+			compatible = "gpio-keys";
+			input_ant_on: u10_p0 {
+				gpios = <&gpio_sensor1_bank1 0 GPIO_ACTIVE_HIGH>;
+				label = "ANT_ON";
+			};
+			ngnss_rst: u10_p5 { /* TODO - this will be an OC output on rev 2.0.0 */
+				gpios = <&gpio_sensor1_bank1 5 (GPIO_ACTIVE_LOW|GPIO_OPEN_DRAIN)>;
+				label = "nGNSS_RST";
+			};
+		};
+	};
+	bmi270@68 {
+		/* the IRQ goes to the pcal6408a, then to pin12 on ZED_CONNECTOR */
+		compatible = "bosch,bmi270";
+		reg = <0x68>;
+		irq-gpios =	<&gpio_sensor1_bank1 6 GPIO_ACTIVE_LOW>,	/* BMI_IRQ1 */
+				<&gpio_sensor1_bank1 7 GPIO_ACTIVE_LOW>;	/* BMI_IRQ2 */
+	};
+	iis2mdc@1e {
+		compatible = "st,iis2mdc";
+		reg = <0x1e>;
+		drdy-gpios = <&gpio_sensor1_bank1 3 GPIO_ACTIVE_HIGH>;	/* MAG_IRQ */
+	};
+	hdc2022@40 {
+		compatible = "ti,hdc2022";
+		reg = <0x40>;
+		int-gpios = <&gpio_sensor1_bank1 4 GPIO_ACTIVE_LOW>;	/*HDC_IRQ */
+	};  
+	ltr329@29 {
+		/* we actually have a ltr303 which has additional */
+		/* registers for interrupt */
+		compatible = "liteon,ltr329";
+		reg = <0x29>;
+		// int-gpios = <&gpio_sensor1_bank1 1 GPIO_ACTIVE_LOW>;	/* ALS_IRQ */
+	};
+	lps22hh@5d {
+		compatible = "st,lps22hh";
+		reg = <0x5d>;
+		drdy-gpios = <&gpio_sensor1_bank1 2 (GPIO_ACTIVE_HIGH|GPIO_PULL_DOWN)>; /* PRESS_DRDY */
+		status = "okay";
+	};
+};
+
+&uart2 { /* used for the GNSS receiver */
+	status = "okay";
+	pinctrl-0 = <&UART_DEFAULT>; 
+	pinctrl-1 = <&UART_SLEEP>; 
+	current-speed = <115200>;
+	pinctrl-names = "default", "sleep";
+
+	gnss_lc26g: lc26g {
+		compatible = "quectel,lc26g";
+		pps-mode = "GNSS_PPS_MODE_ENABLED";
+	};
+
+};
+

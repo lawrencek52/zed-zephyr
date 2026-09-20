@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: Apache-2.0
+#
+# Copyright (c) 2025 Lawrence King
+
+config SHIELD_ZED_DISPLAY1
+	def_bool $(shields_list_contains,zed_display1)
+
+config SHIELD_ZED_DISPLAY1_CON1
+	def_bool $(shields_list_contains,zed_display1_con1)
+
+config SHIELD_ZED_DISPLAY1_CON2
+	def_bool $(shields_list_contains,zed_display1_con2)
+
+config SHIELD_ZED_DISPLAY1_CON3
+	def_bool $(shields_list_contains,zed_display1_con3)
+
+config SHIELD_ZED_DISPLAY1_CON4
+	def_bool $(shields_list_contains,zed_display1_con4)

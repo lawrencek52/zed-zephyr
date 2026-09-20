@@ -1,0 +1,85 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Copyright (c) 2025 Lawrence King
+ */
+
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/gpio/nordic-nrf-gpio.h>
+#include <zephyr/dt-bindings/pinctrl/nrf-pinctrl.h>
+/{
+	chosen {
+		zephyr,display = &ssd1351;
+	};
+
+	aliases {
+		//sensor1gnss1pps = &input_gnss_1pps;
+		//sensor1anton = &input_ant_on;
+		//sensor1io = &gpio_sensor1_bank1;
+		//sensor1nbckprst = &gnssnbckprst;
+		//sensor1ledena = &ledena;
+	};
+
+/*	leds {
+		status = "okay";
+		compatible = "gpio-leds";
+		gnssnbckprst: gnss_nbckp_rst {
+			gpios = <&ZED_CONNECTOR 9 GPIO_ACTIVE_LOW>;
+			label = "nBCKP_RST";
+		};
+		ledena: sensor_led_ena {
+			gpios = <&ZED_CONNECTOR 10 GPIO_ACTIVE_LOW>;
+			label = "LED_ENA";
+		};
+	}; */
+
+	display1_inputs	{
+		compatible = "gpio-keys";
+		display_button: d10  {
+			gpios = <&ZED_CONNECTOR 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+			label = "Display Button";
+			zephyr,code = <INPUT_BTN_1>;
+		};
+	};
+
+	zephyr_display {
+		compatible = "zephyr,mipi-dbi-spi";
+		status = "okay";
+		dc-gpios = <&ZED_CONNECTOR 8 0>;	/* data/command pin8 on connector*/
+		reset-gpios = <&ZED_CONNECTOR 9 GPIO_ACTIVE_LOW>;
+		spi-dev = <&spi4>;
+		write-only;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		ssd1351: ssd1351@0 {
+			compatible = "solomon,ssd1351";
+			mipi-max-frequency = <1000000>;	/* was 1MHz */
+			reg = <0>;
+			width = <128>;
+			height = <96>;
+			oscillator-freq = <0xF1>;	// (reg B3) OK was 0xF1
+			display-offset = <0x0>;
+			multiplex-ratio = <0x7F>;	// was <0x7f>; 96?
+			phase-length = <0x32>;		// (reg B1h) was <0x32>
+			vcomh-voltage = <0x05>; 	// was <0x05>;
+			current-att = <0xf>;		// OK
+			precharge-time = <0x1>;		// OK (reg B6h)
+			start-line = <0>;
+			precharge-voltage = <0x17>;	// (reb BBh) was 0x17
+			remap-value = <0x22>; // (reg A0h) was <0x20>; (mirrored)
+			mipi-mode = "MIPI_DBI_MODE_SPI_4WIRE";
+		};
+	};
+};
+
+&spi4 {
+	compatible = "nordic,nrf-spim";
+	status = "okay";
+//	cs-gpios = <&ZED_CONNECTOR 5 GPIO_ACTIVE_LOW>;	/* chip select pin5 on connector*/
+//	max-frequency = <8000000>; /* Sets 8 MHz */
+	pinctrl-0 = <&SPI_DEFAULT>; 
+	pinctrl-1 = <&SPI_SLEEP>; 
+	pinctrl-names = "default", "sleep";
+};
+

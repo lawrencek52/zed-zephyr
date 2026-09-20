@@ -1,0 +1,10 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Copyright (c) 2025 Lawrence King
+ */
+
+#define ZED_CONNECTOR zed_cpu1_con4
+#define SPI_DEFAULT spi_con4_default
+#define SPI_SLEEP spi_con4_sleep
+#include "zed_display1.dtsi"

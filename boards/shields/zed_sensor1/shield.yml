@@ -1,0 +1,59 @@
+# SPDX-License-Identifier: Apache-2.0
+#
+# Copyright (c) 2025, Lawrence King
+shields:
+  - name: zed_sensor1
+    full_name: Zed Boards Sensor1 - (default connected to CON2)
+    vendor: Zed-Boards
+    supported_features:
+      - accelerometer
+      - gyro
+      - compass
+      - gps
+      - pressure
+      - humidity
+      - ambient light
+  - name: zed_sensor1_con1
+    full_name: Zed Boards Sensor1 - connected to CON1
+    vendor: Zed-Boards
+    supported_features:
+      - accelerometer
+      - gyro
+      - compass
+      - gps
+      - pressure
+      - humidity
+      - ambient light
+  - name: zed_sensor1_con2
+    full_name: Zed Boards Sensor1 - connected to CON2
+    vendor: Zed-Boards
+    supported_features:
+      - accelerometer
+      - gyro
+      - compass
+      - gps
+      - pressure
+      - humidity
+      - ambient light
+  - name: zed_sensor1_con3
+    full_name: Zed Boards Sensor1 - connected to CON3
+    vendor: Zed-Boards
+    supported_features:
+      - accelerometer
+      - gyro
+      - compass
+      - gps
+      - pressure
+      - humidity
+      - ambient light
+  - name: zed_sensor1_con4
+    full_name: Zed Boards Sensor1 - connected to CON4
+    vendor: Zed-Boards
+    supported_features:
+      - accelerometer
+      - gyro
+      - compass
+      - gps
+      - pressure
+      - humidity
+      - ambient light

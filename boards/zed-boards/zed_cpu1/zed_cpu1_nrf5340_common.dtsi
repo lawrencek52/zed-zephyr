@@ -1,0 +1,50 @@
+/*
+ * Copyright (c) 2020 Nordic Semiconductor ASA
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+/ {
+	leds {
+		compatible = "gpio-leds";
+
+		led0: led_0 {
+			gpios = <&gpio1 15 GPIO_ACTIVE_LOW>;
+			label = "Red LED 0";
+		};
+
+		led1: led_1 {
+			gpios = <&gpio1 14 GPIO_ACTIVE_LOW>;
+			label = "Green LED 1";
+		};
+
+		led2: led_2 {
+			gpios = <&gpio1 12 GPIO_ACTIVE_LOW>;
+			label = "Blue LED 2";
+		};
+	};
+
+	buttons {
+		compatible = "gpio-keys";
+		status = "okay";
+		button0: button_0 {
+			gpios = <&gpio0 23 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+			label = "USER button";
+			zephyr,code = <INPUT_BTN_0>;
+		};
+
+	};
+
+
+	/* These aliases are provided for compatibility with samples */
+	aliases {
+		led0 = &led0;
+		led1 = &led1;
+		led2 = &led2;
+		sw0 = &button0;
+		bootloader-led0 = &led0;
+		mcuboot-button0 = &button0;
+		mcuboot-led0 = &led1; /* green */
+	};
+};

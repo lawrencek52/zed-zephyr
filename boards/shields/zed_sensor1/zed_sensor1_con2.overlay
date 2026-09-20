@@ -1,0 +1,12 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Copyright (c) 2025 Lawrence King
+ */
+
+#define ZED_CONNECTOR zed_cpu1_con2
+#define I2C_DEFAULT i2c_con2_default
+#define I2C_SLEEP i2c_con2_sleep
+#define UART_DEFAULT uart_con2_default
+#define UART_SLEEP uart_con2_sleep
+#include "zed_sensor1.dtsi"

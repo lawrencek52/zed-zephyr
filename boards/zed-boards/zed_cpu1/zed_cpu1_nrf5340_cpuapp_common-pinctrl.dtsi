@@ -1,0 +1,150 @@
+/*
+ * Copyright (c) 2022 Nordic Semiconductor
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+&pinctrl {
+/* the nrf5340 has 4 TWIM controllers.
+   - i2c3 is reserved for the onboard housekeeping chips
+   - i2c1 is used by the sensor board, and can be moved to any
+     connector, it is available for use if you do not have a sensor1 shield
+   - currently i2c0 and i2c2 can be allocated to any GPIO
+*/
+
+
+/* the houskeeping chips are tied to i2c3 */
+	i2c3_default: i2c3_default {
+		group1 {
+			psels = <NRF_PSEL(TWIM_SDA, 1, 9)>,
+				<NRF_PSEL(TWIM_SCL, 1, 10)>;
+			bias-pull-up;
+		};
+	};
+
+	i2c3_sleep: i2c3_sleep {
+		group1 {
+			psels = <NRF_PSEL(TWIM_SDA, 1, 9)>,
+				<NRF_PSEL(TWIM_SCL, 1, 10)>;
+			low-power-enable;
+			bias-pull-up;
+		};
+	};
+
+/* the NRF5340 has 4 UART controllers
+   - UART0 is hard connected to the debug connector.
+   - UART2 is used by the sensor1 shield and can be connected to any one of the connectors
+     UART2 is available for any use if the Sensor shield is  not connected.
+   - UART1 and UART3 are available for any use
+*/
+	uart0_default: uart0_default {
+		group1 {
+			psels = <NRF_PSEL(UART_TX, 0, 20)>,
+				<NRF_PSEL(UART_RTS, 0, 19)>;
+		};
+
+		group2 {
+			psels = <NRF_PSEL(UART_RX, 0, 22)>,
+				<NRF_PSEL(UART_CTS, 0, 21)>;
+			bias-pull-up;
+		};
+	};
+
+	uart0_sleep: uart0_sleep {
+		group1 {
+			psels = <NRF_PSEL(UART_TX, 0, 20)>,
+				<NRF_PSEL(UART_RX, 0, 22)>,
+				<NRF_PSEL(UART_RTS, 0, 19)>,
+				<NRF_PSEL(UART_CTS, 0, 21)>;
+			low-power-enable;
+		};
+	};
+
+
+	pwm3_default: pwm3_default {
+		group1 {
+			psels = <NRF_PSEL(PWM_OUT0, 1, 15)>,	/* Red */
+				<NRF_PSEL(PWM_OUT1, 1, 14)>,	/* Green */
+				<NRF_PSEL(PWM_OUT2, 1, 12)>;	/* Blue */
+		};
+	};
+
+	pwm3_sleep: pwm3_sleep {
+		group1 {
+			psels = <NRF_PSEL(PWM_OUT0, 1, 15)>,	/* Red */
+				<NRF_PSEL(PWM_OUT1, 1, 14)>,	/* Green */
+				<NRF_PSEL(PWM_OUT2, 1, 12)>;	/* Blue */
+			low-power-enable;
+		};
+	};
+
+/* the QSPI peripheral is connected to CON4 */
+	qspi_default: qspi_default {
+		group1 {
+			psels = <NRF_PSEL(QSPI_SCK, 0, 17)>,
+				<NRF_PSEL(QSPI_IO0, 0, 13)>,
+				<NRF_PSEL(QSPI_IO1, 0, 14)>,
+				<NRF_PSEL(QSPI_IO2, 0, 15)>,
+				<NRF_PSEL(QSPI_IO3, 0, 16)>,
+				<NRF_PSEL(QSPI_CSN, 0, 18)>;
+			nordic,drive-mode = <NRF_DRIVE_H0H1>;
+		};
+	};
+
+	qspi_sleep: qspi_sleep {
+		group1 {
+			psels = <NRF_PSEL(QSPI_SCK, 0, 17)>,
+				<NRF_PSEL(QSPI_IO0, 0, 13)>,
+				<NRF_PSEL(QSPI_IO1, 0, 14)>,
+				<NRF_PSEL(QSPI_IO2, 0, 15)>,
+				<NRF_PSEL(QSPI_IO3, 0, 16)>;
+			low-power-enable;
+		};
+
+		group2 {
+			psels = <NRF_PSEL(QSPI_CSN, 0, 18)>;
+			low-power-enable;
+			bias-pull-up;
+		};
+	};
+
+/* uart1 is connected to CON2, RTS/CTS are not currently used */
+	uart1_default: uart1_default {
+		group1 {
+			psels = <NRF_PSEL(UART_TX, 1, 0)> /*,
+				<NRF_PSEL(UART_RTS, 1, 4)> */;
+		};
+
+		group2 {
+			psels = <NRF_PSEL(UART_RX, 1, 1)> /*,
+				<NRF_PSEL(UART_CTS, 1, 5)> */;
+			bias-pull-up;
+		};
+	};
+
+	uart1_sleep: uart1_sleep {
+		group1 {
+			psels = <NRF_PSEL(UART_TX, 1, 0)>,
+				<NRF_PSEL(UART_RX, 1, 1)> /*,
+				<NRF_PSEL(UART_RTS, 1, 4)>,
+				<NRF_PSEL(UART_CTS, 1, 5)> */;
+			low-power-enable;
+		};
+	};
+
+/*	spi4_default: spi4_default {
+		group1 {
+			psels = <NRF_PSEL(SPIM_SCK, 1, 15)>,
+				<NRF_PSEL(SPIM_MISO, 1, 14)>,
+				<NRF_PSEL(SPIM_MOSI, 1, 13)>;
+		};
+	};
+
+	spi4_sleep: spi4_sleep {
+		group1 {
+			psels = <NRF_PSEL(SPIM_SCK, 1, 15)>,
+				<NRF_PSEL(SPIM_MISO, 1, 14)>,
+				<NRF_PSEL(SPIM_MOSI, 1, 13)>;
+			low-power-enable;
+		};
+	}; */
+};
